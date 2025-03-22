@@ -8,6 +8,15 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2024.04.01"
+retrofit = "2.9.0"
+room = "2.6.1"
+navigationCompose = "2.8.5"
+serialization = "1.7.3"
+androidxHiltNavigation = "1.2.0"
+daggerHilt = "2.52"
+ksp = "2.0.0-1.0.22"
+maps = "4.4.1"
+playServicesMaps = "19.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,8 +34,37 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+#Navigation
+navigation-compose = { group = "androidx.navigation", name = 'navigation-compose', version.ref = "navigationCompose" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+#Retrofit
+kotlin-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+kotlin-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+#Dagger-hilt
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "daggerHilt" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "daggerHilt" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigation" }
+
+#Room
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
+
+#Maps
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "maps" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+#Serialization
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-parcelize = { id = "kotlin-parcelize" }
 
