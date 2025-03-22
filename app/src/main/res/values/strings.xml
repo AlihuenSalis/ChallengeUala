@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ChallengeUala</string>
+    <string name="search_hint">Buscar</string>
+    <string name="latitude">Latitud:</string>
+    <string name="longitude">Longitud:</string>
+    <string name="icon_description">Icono Favoritos</string>
+    <string name="no_cities_found">No se encontraron ciudades</string>
 </resources>

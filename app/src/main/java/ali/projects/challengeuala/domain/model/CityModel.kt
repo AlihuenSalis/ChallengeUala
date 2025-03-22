@@ -1,20 +1,17 @@
-package ali.projects.challengeuala.data.database.entities
+package ali.projects.challengeuala.domain.model
 
-import ali.projects.challengeuala.domain.model.CityModel
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import ali.projects.challengeuala.data.database.entities.CityEntity
 
-@Entity(tableName = "city_entity_table")
-data class CityEntity(
-    @PrimaryKey val id: Int,
+data class CityModel (
+    val id: Int,
     val name: String,
     val country: String,
     val latitude: Double,
     val longitude: Double,
     val isFavorite: Boolean = false
 ) {
-    fun toDomain(): CityModel {
-        return CityModel(
+    fun toEntity(): CityEntity {
+        return CityEntity(
             id = id,
             name = name,
             country = country,
@@ -22,6 +19,5 @@ data class CityEntity(
             longitude = longitude,
             isFavorite = isFavorite
         )
-
     }
 }
