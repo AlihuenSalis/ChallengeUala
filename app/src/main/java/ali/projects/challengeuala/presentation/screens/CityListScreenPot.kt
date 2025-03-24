@@ -48,34 +48,38 @@ fun CityListScreenPot(navController: NavController, viewModel: CityViewModel) {
             searchQuery = searchQuery,
             onValueChange = { query -> viewModel.updateSearchQuery(query) }
         )
-        if (filteredCities.isNotEmpty()) {
             LazyColumn(
                 state = listState
             ) {
                 item {
-                    FavouritesToggle(isFavouritesOnly = isFavouritesOnly, onToggleFavouritesChanged = { viewModel.showOnlyFavorites(searchQuery, it) })
+                    FavouritesToggle(isFavouritesOnly = isFavouritesOnly, onToggleFavouritesChanged = { viewModel.showOnlyFavorites(it) })
                 }
-                items(filteredCities) { city ->
-                    CityItem(
-                        city = city,
-                        onClick = {
-                            navController.navigate(
-                                "${Routes.CityMapScreen.route}/${city.name}/${city.latitude}/${city.longitude}"
-                            )
-                        },
-                        onFavoriteClick = {
-                            viewModel.onToggleFavorite(city)
-                        }
-                    )
+                if (filteredCities.isNotEmpty()) {
+
+                    items(filteredCities) { city ->
+                        CityItem(
+                            city = city,
+                            onClick = {
+                                navController.navigate(
+                                    "${Routes.CityMapScreen.route}/${city.name}/${city.latitude}/${city.longitude}"
+                                )
+                            },
+                            onFavoriteClick = {
+                                viewModel.onToggleFavorite(city)
+                            }
+                        )
+                    }
+                } else {
+                    item {
+                        TextView(
+                            text = stringResource(id = R.string.no_cities_found),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        )
+                    }
                 }
+
             }
-        } else {
-            TextView(
-                text = stringResource(id = R.string.no_cities_found),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            )
-        }
     }
 }

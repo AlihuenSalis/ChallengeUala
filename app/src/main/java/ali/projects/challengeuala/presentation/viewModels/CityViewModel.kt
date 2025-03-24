@@ -49,7 +49,6 @@ class CityViewModel @Inject constructor(
 
     init {
         getCities()
-        observeSearchQuery()
     }
 
     private fun observeSearchQuery() {
@@ -83,6 +82,7 @@ class CityViewModel @Inject constructor(
     }
 
     private fun getCitiesFromDatabase() {
+        observeSearchQuery()
         viewModelScope.launch {
             getCitiesByPrefixUC.invoke(
                 _searchQuery.value,
@@ -184,8 +184,7 @@ class CityViewModel @Inject constructor(
         }
     }
 
-    fun showOnlyFavorites(query: String, isFavorite: Boolean) {
-        // TODO: Buscar en base de datos solo las favoritas y actualizar filteredList
+    fun showOnlyFavorites(isFavorite: Boolean) {
         _isFavouritesOnly.value = isFavorite
         if (isFavorite) {
             _allCities.value = _allCities.value.filter { it.isFavorite }

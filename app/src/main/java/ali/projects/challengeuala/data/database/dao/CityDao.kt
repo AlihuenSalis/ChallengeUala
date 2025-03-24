@@ -1,7 +1,6 @@
 package ali.projects.challengeuala.data.database.dao
 
 import ali.projects.challengeuala.data.database.entities.CityEntity
-import ali.projects.challengeuala.domain.model.CityModel
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy

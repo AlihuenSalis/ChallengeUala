@@ -60,14 +60,14 @@ fun CityListScreenLand (viewModel: CityViewModel) {
                 onValueChange = { query -> viewModel.updateSearchQuery(query) },
             )
 
-            if (filteredCities.isNotEmpty()) {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    item {
-                        FavouritesToggle(isFavouritesOnly = isFavouritesOnly, onToggleFavouritesChanged = { viewModel.showOnlyFavorites(searchQuery, it) })
-                    }
+            LazyColumn(
+                state = listState
+            ) {
+                item {
+                    FavouritesToggle(isFavouritesOnly = isFavouritesOnly, onToggleFavouritesChanged = { viewModel.showOnlyFavorites(it) })
+                }
+                if (filteredCities.isNotEmpty()) {
+
                     items(filteredCities) { city ->
                         CityItem(
                             city = city,
@@ -79,14 +79,17 @@ fun CityListScreenLand (viewModel: CityViewModel) {
                             }
                         )
                     }
+                } else {
+                    item {
+                        TextView(
+                            text = stringResource(id = R.string.no_cities_found),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        )
+                    }
                 }
-            } else {
-                TextView(
-                    text = stringResource(id = R.string.no_cities_found),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
+
             }
         }
 
