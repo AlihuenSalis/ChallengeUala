@@ -4,6 +4,7 @@ import ali.projects.challengeuala.R
 import ali.projects.challengeuala.domain.model.CityModel
 import ali.projects.challengeuala.ui.theme.accentColor
 import ali.projects.challengeuala.ui.theme.primaryColor
+import android.widget.TextView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,12 +21,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun CityItem(
@@ -33,6 +43,7 @@ fun CityItem(
     onClick: () -> Unit,
     onFavoriteClick: () -> Unit
 ) {
+    var showDialog by remember { mutableStateOf(false) }
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -51,13 +62,13 @@ fun CityItem(
             Column(modifier = Modifier.weight(1f)) {
                 TextView(
                     text = "${city.name}, ${city.country}",
-                    modifier = Modifier.padding(bottom = 4.dp),
+                    modifier = Modifier.padding(bottom = 8.dp),
                     textColor = primaryColor
                 )
                 Row {
                     TextView(
                         text = "${stringResource(id = R.string.latitude)} ${city.latitude}",
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     TextView(
@@ -65,6 +76,17 @@ fun CityItem(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+                Text(
+                    text = stringResource(id= R.string.lbl_show_detail),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
+                    color = Color.Blue,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 5.dp).align(Alignment.CenterHorizontally).clickable {
+                        showDialog = true
+                    }
+                )
             }
             IconButton(onClick = onFavoriteClick) {
                 Icon(
@@ -74,5 +96,8 @@ fun CityItem(
                 )
             }
         }
+    }
+    if (showDialog) {
+        CityInfoDialog(city = city, onDismiss = { showDialog = false })
     }
 }

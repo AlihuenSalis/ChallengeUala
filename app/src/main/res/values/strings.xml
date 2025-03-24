@@ -5,4 +5,5 @@
     <string name="longitude">Longitud:</string>
     <string name="icon_description">Icono Favoritos</string>
     <string name="no_cities_found">No se encontraron ciudades</string>
+    <string name="lbl_show_detail">Mostrar detalle</string>
 </resources>

@@ -2,6 +2,7 @@ package ali.projects.challengeuala.presentation.screens
 
 import ali.projects.challengeuala.R
 import ali.projects.challengeuala.presentation.core.navigation.Routes
+import ali.projects.challengeuala.presentation.screens.components.CityInfoDialog
 import ali.projects.challengeuala.presentation.screens.components.CityItem
 import ali.projects.challengeuala.presentation.screens.components.FavouritesToggle
 import ali.projects.challengeuala.presentation.screens.components.SearchTextField
@@ -32,7 +33,6 @@ fun CityListScreenPot(navController: NavController, viewModel: CityViewModel) {
     val filteredCities by viewModel.cities.collectAsState()
     val listState = rememberLazyListState()
     val isFavouritesOnly by viewModel.isFavouritesOnly.collectAsState()
-
     val lastVisibleIndex by remember {
         derivedStateOf { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
     }
@@ -43,43 +43,43 @@ fun CityListScreenPot(navController: NavController, viewModel: CityViewModel) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(top = 16.dp, start = 5.dp, end = 5.dp)) {
         SearchTextField(
             searchQuery = searchQuery,
             onValueChange = { query -> viewModel.updateSearchQuery(query) }
         )
-            LazyColumn(
-                state = listState
-            ) {
-                item {
-                    FavouritesToggle(isFavouritesOnly = isFavouritesOnly, onToggleFavouritesChanged = { viewModel.showOnlyFavorites(it) })
-                }
-                if (filteredCities.isNotEmpty()) {
-
-                    items(filteredCities) { city ->
-                        CityItem(
-                            city = city,
-                            onClick = {
-                                navController.navigate(
-                                    "${Routes.CityMapScreen.route}/${city.name}/${city.latitude}/${city.longitude}"
-                                )
-                            },
-                            onFavoriteClick = {
-                                viewModel.onToggleFavorite(city)
-                            }
-                        )
-                    }
-                } else {
-                    item {
-                        TextView(
-                            text = stringResource(id = R.string.no_cities_found),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                        )
-                    }
-                }
-
+        LazyColumn(
+            state = listState
+        ) {
+            item {
+                FavouritesToggle(isFavouritesOnly = isFavouritesOnly, onToggleFavouritesChanged = { viewModel.showOnlyFavorites(it) })
             }
+            if (filteredCities.isNotEmpty()) {
+
+                items(filteredCities) { city ->
+                    CityItem(
+                        city = city,
+                        onClick = {
+                            navController.navigate(
+                                "${Routes.CityMapScreen.route}/${city.name}/${city.latitude}/${city.longitude}"
+                            )
+                        },
+                        onFavoriteClick = {
+                            viewModel.onToggleFavorite(city)
+                        }
+                    )
+                }
+            } else {
+                item {
+                    TextView(
+                        text = stringResource(id = R.string.no_cities_found),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
+                }
+            }
+
+        }
     }
 }

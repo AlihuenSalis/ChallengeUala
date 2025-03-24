@@ -36,7 +36,7 @@ class CityViewModel @Inject constructor(
     private val _filteredCities = MutableStateFlow<List<CityModel>>(emptyList())
     val cities: StateFlow<List<CityModel>> = _filteredCities
 
-    private val _citiesMarkLikeNotFavorites = MutableStateFlow<List<CityModel>> (emptyList())
+    private val _citiesMarkLikeNotFavorites = MutableStateFlow<List<CityModel>>(emptyList())
 
     private var currentPage = 0
     private var isLastPage = false
@@ -48,6 +48,7 @@ class CityViewModel @Inject constructor(
     val isFavouritesOnly = _isFavouritesOnly.asStateFlow()
 
     init {
+        // Obtenemos el listado de ciudades de bd o api
         getCities()
     }
 
@@ -69,10 +70,13 @@ class CityViewModel @Inject constructor(
     private fun getCities() {
         viewModelScope.launch {
             try {
+                // Consultamos ci existen ciudades en bd
                 val hasLocalData = checkDatabaseIfEmptyUC.invoke()
                 if (!hasLocalData) {
+                    // Si no existe, las obtenemos del api
                     getCitiesFromApi()
                 } else {
+                    // Si existe, las obtenemos de bd
                     getCitiesFromDatabase()
                 }
             } catch (e: Exception) {
@@ -82,8 +86,9 @@ class CityViewModel @Inject constructor(
     }
 
     private fun getCitiesFromDatabase() {
-        observeSearchQuery()
+        observeSearchQuery() // activamos el buscador
         viewModelScope.launch {
+            // conectamos con la base de datos y paginación
             getCitiesByPrefixUC.invoke(
                 _searchQuery.value,
                 Constants.PAGE_SIZE,
@@ -96,7 +101,7 @@ class CityViewModel @Inject constructor(
                     _allCities.value = (_allCities.value + cityList).distinctBy { it.id }
                     _filteredCities.value =
                         filterCitiesByQuery(_searchQuery.value, _allCities.value)
-                    updateState()
+                    updateState() // actualizamos el estado de la interfaz
                 }
         }
     }
@@ -111,6 +116,8 @@ class CityViewModel @Inject constructor(
 
     private fun getCitiesFromApi() {
         viewModelScope.launch {
+            // Obtenemos las ciudades del api, las guardamos en base de datos y luego las buscamos en la base
+            // Para tenerlas en local
             getCitiesFromApiUC().collect { cities ->
                 storeCitiesUC(cities)
                 getCitiesFromDatabase()
@@ -123,11 +130,21 @@ class CityViewModel @Inject constructor(
             val id = city.id
             val isFavorite = !city.isFavorite
 
+            // Llegamos a este metodo Cuando se toca el botón de favorito del items de la ciudad
+
             if (_isFavouritesOnly.value) {
-                _citiesMarkLikeNotFavorites.value += city.copy(isFavorite = false)
-                _allCities.value -= _allCities.value.first { it.id == city.id }
+                // Si está marcado el spacer de solo favoritos entramos acá.
+                _citiesMarkLikeNotFavorites.value += city.copy(isFavorite = false) // Guardamos las ciudades que desactivó de favoritos para luego actualizar. (Esta es una forma de hacerlo, hay otras mas como por ejemplo tocarla y actualizarlas.)
+                _allCities.value -= _allCities.value.first { it.id == city.id } // Del listado general, mostramos solo las marcadas como favoritas.
+                if (_allCities.value.isEmpty()) { // Si el listado de favoritos se vacia, las actualizamos en bd, reestablecemos el spacer y obtenemos el listado nuevamente actualizado
+                    updateFavoritesCities()
+                    _isFavouritesOnly.value = false
+                }
             } else {
-                updateFavoriteCityUC(city.id, !city.isFavorite)
+                updateFavoriteCityUC(
+                    city.id,
+                    !city.isFavorite
+                ) // Si se desmarca el spacer y existen ciudades que sacamos de favoritas, las actualizamos en bd
                 _allCities.value = _allCities.value.map { existingCity ->
                     if (existingCity.id == id) {
                         existingCity.copy(isFavorite = isFavorite)
@@ -136,7 +153,10 @@ class CityViewModel @Inject constructor(
                     }
                 }
             }
-            _filteredCities.value = filterCitiesByQuery(_searchQuery.value, _allCities.value)
+            _filteredCities.value = filterCitiesByQuery(
+                _searchQuery.value,
+                _allCities.value
+            ) // filtro de ciudades según campo de texto de busqueda
         }
     }
 
@@ -146,6 +166,7 @@ class CityViewModel @Inject constructor(
     }
 
     fun updateSearchQuery(query: String) {
+        // Metodo que actualiza la busqueda
         if (_searchQuery.value != query) {
             _searchQuery.value = query
             resetPagination()
@@ -185,24 +206,36 @@ class CityViewModel @Inject constructor(
     }
 
     fun showOnlyFavorites(isFavorite: Boolean) {
+        // Metodo que se llama al activar y desactivar el spacer de favorito
         _isFavouritesOnly.value = isFavorite
         if (isFavorite) {
+            // si es true, mostramos solo las ciudades marcadas como favoritas.
             _allCities.value = _allCities.value.filter { it.isFavorite }
             _filteredCities.value = filterCitiesByQuery(_searchQuery.value, _allCities.value)
+            if (_filteredCities.value.isEmpty()) {
+                updateFavoritesCities()
+            }
             updateState()
         } else {
-            viewModelScope.launch {
-                if (_citiesMarkLikeNotFavorites.value.isNotEmpty()) {
-                    updateCitiesLikeNoFavoritesUC(_citiesMarkLikeNotFavorites.value)
-                }
-                resetPagination()
-                _allCities.value = emptyList()
-                _filteredCities.value = emptyList()
-                _searchQuery.value = ""
-                getCitiesFromDatabase()
-            }
+            // si es false, actualizamos el listado y mostramos
+            updateFavoritesCities()
+            resetPagination()
+            _allCities.value = emptyList()
+            _filteredCities.value = emptyList()
+            _searchQuery.value = ""
+            getCitiesFromDatabase()
+
         }
 
+    }
+
+    private fun updateFavoritesCities() {
+        viewModelScope.launch {
+            if (_citiesMarkLikeNotFavorites.value.isNotEmpty()) {
+                updateCitiesLikeNoFavoritesUC(_citiesMarkLikeNotFavorites.value)
+                _citiesMarkLikeNotFavorites.value = emptyList()
+            }
+        }
     }
 
 }
