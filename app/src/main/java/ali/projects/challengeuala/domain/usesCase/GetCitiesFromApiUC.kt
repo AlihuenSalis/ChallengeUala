@@ -9,7 +9,6 @@ class GetCitiesFromApiUC @Inject constructor(
     private val networkRepository: NetworkRepository
 ){
     suspend operator fun invoke(): Flow<List<CityModel>> {
-        val response = networkRepository.getCitiesFromApi()
-        return response
+        return networkRepository.getCitiesFromApi()
     }
 }

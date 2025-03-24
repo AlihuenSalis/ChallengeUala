@@ -59,7 +59,8 @@ dependencies {
 
     // Dagger Hilt
     implementation(libs.dagger.hilt.android)
-    implementation(libs.androidx.benchmark.common)
+    implementation(libs.androidx.monitor)
+    testImplementation(libs.androidx.runner)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -81,6 +82,10 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
 
+    testImplementation(libs.core.ktx)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
