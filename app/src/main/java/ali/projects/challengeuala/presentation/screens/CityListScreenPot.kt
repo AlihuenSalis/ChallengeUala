@@ -2,7 +2,6 @@ package ali.projects.challengeuala.presentation.screens
 
 import ali.projects.challengeuala.R
 import ali.projects.challengeuala.presentation.core.navigation.Routes
-import ali.projects.challengeuala.presentation.screens.components.CityInfoDialog
 import ali.projects.challengeuala.presentation.screens.components.CityItem
 import ali.projects.challengeuala.presentation.screens.components.FavouritesToggle
 import ali.projects.challengeuala.presentation.screens.components.SearchTextField

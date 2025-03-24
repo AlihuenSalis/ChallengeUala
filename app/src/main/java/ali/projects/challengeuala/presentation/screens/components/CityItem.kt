@@ -4,7 +4,6 @@ import ali.projects.challengeuala.R
 import ali.projects.challengeuala.domain.model.CityModel
 import ali.projects.challengeuala.ui.theme.accentColor
 import ali.projects.challengeuala.ui.theme.primaryColor
-import android.widget.TextView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
